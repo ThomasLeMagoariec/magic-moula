@@ -2,6 +2,21 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
+"""
+! API Endpoints
+
+* Create Account
+* Login
+? Update User Info
+? Delete User
+? Transfer from account to another
+? Get Account Balance
+? Get Account Transactions
+? Get Account Info
+
+"""
+
+
 @app.route('/')
 def index():
     return "Hello, World!"
@@ -28,6 +43,7 @@ def login():
     #! check if account exists in database
 
     return "success", 200
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
