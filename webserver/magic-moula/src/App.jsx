@@ -5,7 +5,7 @@ function App() {
 
   return (
     <>
-      <button className='btn btn-primary'>test</button  >
+      <button className='btn btn-primary'>test login</button  >
     </>
   )
 }
