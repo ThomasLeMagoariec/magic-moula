@@ -26,3 +26,4 @@ vendor/
 Thumbs.db
 
 explication.py
+.env

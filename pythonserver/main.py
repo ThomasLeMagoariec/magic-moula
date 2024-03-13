@@ -1,10 +1,11 @@
 from flask import Flask, request
 import mysql.connector
+import os
 
 cnx = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="admin",
+    password=os.environ["DB_PWD"],
     unix_socket="/var/run/mysqld/mysqld.sock"  
 )
 cursor = cnx.cursor()
