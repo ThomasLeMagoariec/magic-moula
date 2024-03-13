@@ -3,17 +3,6 @@ import mysql.connector
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
-
-cnx = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password=os.environ["DB_PWD"],
-    unix_socket="/var/run/mysqld/mysqld.sock"  
-)
-cursor = cnx.cursor()
-cursor.execute("USE prod_magic_moula")
-
 app = Flask(__name__)
 
 """
@@ -168,6 +157,17 @@ def get_transactions():
     return str(cursor.fetchall()), 200
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+    load_dotenv()
+
+    cnx = mysql.connector.connect(
+        host=os.environ["DB_HOST"],
+        user="root",
+        password=os.environ["DB_PWD"],
+        unix_socket="/var/run/mysqld/mysqld.sock"  
+    )
+    cursor = cnx.cursor()
+    cursor.execute("USE prod_magic_moula")
+
+    app.run(host="0.0.0.0")
     cursor.close()
     cnx.close()
