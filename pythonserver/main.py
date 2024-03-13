@@ -1,6 +1,9 @@
 from flask import Flask, request
 import mysql.connector
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 cnx = mysql.connector.connect(
     host="localhost",
