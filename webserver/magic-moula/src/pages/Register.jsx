@@ -34,7 +34,7 @@ const Register = () => {
         <Header />
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '70vh', backgroundColor: "#F7EDE2"}}>
         <div style={{border: 'solid 3px #283044',width: '450px', padding: "20px", display: 'flex',flexDirection:'column', alignItems: 'center'}} className='rounded-4 bg-light'>
-            <h1>Login</h1>
+            <h1>Register</h1>
             <div className='d-grid gap-2 col-12 mx-auto'>
             <div className="border border-2 rounded-3 form-floating input-group-lg mt-2 mb-2">
             
@@ -43,7 +43,7 @@ const Register = () => {
             </div>
             <div className="border border-2 rounded-3 form-floating input-group-lg mt-2 mb-2">
             <input id='password' type="password" placeholder="Mot de passe" onChange={(ev) => setLastname(ev.target.value)} className="form-control" />
-            <label htmlFor="password" className="form-label">Lastname</label>
+            <label htmlFor="password" className="form-label">Last Name</label>
             </div>
             <div className="border border-2 rounded-3 form-floating input-group-lg mt-2 mb-2">
             
