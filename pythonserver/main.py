@@ -1,9 +1,11 @@
 from flask import Flask, request
+from flask_cors import CORS
 import mysql.connector
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import os
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"*": {"origins": "*"}})
 
 """
 ! API Endpoints
@@ -29,13 +31,13 @@ def index():
 
 @app.route("/create_account", methods=["POST"])
 def create_account():
-    data = request.form
+    data = request.json
 
     if not "password" in data: return "Password is required", 400
     if not "email" in data: return "Email is required", 400
     if not "name" in data: return "Name is required", 400
     if not "last_name" in data: return "Last Name is required", 400
-
+    #Rajoute une verification que l'email n'est pas deja dans la base de donnée
     #! add account to database
     cursor.execute("INSERT INTO usr_accounts (name, last_name, email, password) VALUES (%s, %s, %s, %s)", (data["name"], data["last_name"], data["email"], data["password"]))
 
@@ -44,8 +46,8 @@ def create_account():
 
 @app.route("/login", methods=["POST"])
 def login():
-    data = request.form
-
+    data = request.json
+    app.logger.error(data)
     if not "password" in data: return "Password is required", 400
     if not "email" in data: return "Email is required", 400
 
@@ -58,7 +60,7 @@ def login():
 
 @app.route("/update_user_info", methods=["POST"])
 def update_user_info():
-    data = request.form
+    data = request.json
 
     if not "id" in data: return "ID is required", 400
 
@@ -80,7 +82,7 @@ def update_user_info():
 
 @app.route("/delete_user", methods=["DELETE"])
 def delete_user():
-    data = request.form
+    data = request.json
 
     if not "id" in data: return "ID is required", 400
 
@@ -90,7 +92,7 @@ def delete_user():
 
 @app.route('/get_user_info', methods=["GET"])
 def get_user_info():
-    data = request.form
+    data = request.json
 
     if not "id" in data: return "ID is required", 400
 
@@ -100,7 +102,7 @@ def get_user_info():
 
 @app.route("/get_balance", methods=["GET"])
 def get_balance():
-    data = request.form
+    data = request.json
 
     if not "id" in data: return "ID is required", 400
 
@@ -110,7 +112,7 @@ def get_balance():
 
 @app.route("/update_balance", methods=["POST"])
 def update_balance():
-    data = request.form
+    data = request.json
 
     if not "id" in data: return "ID is required", 400
     if not "amount" in data: return "Amount is required", 400
@@ -122,7 +124,7 @@ def update_balance():
 
 @app.route("/transfer", methods=["POST"])
 def transfer():
-    data = request.form
+    data = request.json
 
     if not "from" in data: return "From (sender) is required", 400
     if not "to" in data: return "To (receiver) is required", 400
@@ -149,7 +151,7 @@ def transfer():
 
 @app.route("/get_transactions", methods=["GET"])
 def get_transactions():
-    data = request.form
+    data = request.json
 
     if not "id" in data: return "ID is required", 400
 
@@ -157,17 +159,18 @@ def get_transactions():
     return str(cursor.fetchall()), 200
 
 if __name__ == '__main__':
-    load_dotenv()
+    # load_dotenv()
 
-    cnx = mysql.connector.connect(
-        host=os.environ["DB_HOST"],
-        user="root",
-        password=os.environ["DB_PWD"],
-        unix_socket="/var/run/mysqld/mysqld.sock"  
-    )
+    # cnx = mysql.connector.connect(
+    #     host=os.environ["DB_HOST"],
+    #     user="root",
+    #     password=os.environ["DB_PWD"],
+    #     unix_socket="/var/run/mysqld/mysqld.sock"  
+    # )
+    cnx = mysql.connector.connect(host='localhost',database='magicmoula',user='root')
     cursor = cnx.cursor()
-    cursor.execute("USE prod_magic_moula")
+    # cursor.execute("USE prod_magic_moula")
 
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0",debug=True)
     cursor.close()
     cnx.close()
