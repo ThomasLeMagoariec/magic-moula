@@ -42,7 +42,7 @@ const Register = () => {
             <label htmlFor="email" className="form-label">Name</label>
             </div>
             <div className="border border-2 rounded-3 form-floating input-group-lg mt-2 mb-2">
-            <input id='password' type="password" placeholder="Mot de passe" onChange={(ev) => setLastname(ev.target.value)} className="form-control" />
+            <input id='password' type="text" placeholder="Mot de passe" onChange={(ev) => setLastname(ev.target.value)} className="form-control" />
             <label htmlFor="password" className="form-label">Last Name</label>
             </div>
             <div className="border border-2 rounded-3 form-floating input-group-lg mt-2 mb-2">
@@ -64,7 +64,7 @@ const Register = () => {
             <div className='rounded-4' style={{height: '5px', width: '35%', backgroundColor: '#283044'}}></div>
             </div>
             <div className='d-grid gap-2 col-9 mx-auto'>
-            <button className='btn btn-primary rounded-4 btn-lg'>Login</button>
+            <button className='btn btn-primary rounded-4 btn-lg' onClick={() => navigate('/login')}>Login</button>
             </div>
         </div>
         </div>
