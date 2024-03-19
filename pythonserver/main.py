@@ -1,5 +1,5 @@
-from flask import Flask, session, request
-from flask_session import Session
+from flask import Flask, request
+import jwt
 from flask_cors import CORS
 import mysql.connector
 from dotenv import load_dotenv
@@ -7,6 +7,9 @@ import os
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"*": {"origins": "*"}})
+
+public_key = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz3z3z3z3z3z3z3z3z3z3\n"
+private_key = "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDPfPfPfPfPfPfPf\n"
 
 """
 ! API Endpoints
@@ -26,9 +29,10 @@ cors = CORS(app, resources={r"*": {"origins": "*"}})
 
 @app.route('/')
 def index():
-    cursor.execute("SELECT * FROM usr_accounts")
+    data = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256")
 
-    return cursor.fetchall()
+    return "Hello, " + data["name"] + " " + data["last_name"]
+
 
 @app.route("/create_account", methods=["POST"])
 def create_account():
@@ -63,13 +67,17 @@ def login():
     res = cursor.fetchall()
 
     if len(res) == 0: return "Account not found", 404
-    return str(res[0][0]), 200
+
+    token = jwt.encode({"id": res[0][0], "name": res[0][1], "last_name": res[0][2], "email": res[0][3], "password": res[0][4]}, key=public_key, algorithm="HS256")
+    return {"token": token}, 200
 
 @app.route("/update_user_info", methods=["POST"])
 def update_user_info():
     data = request.json
 
     if not "id" in data: return "ID is required", 400
+
+    if not jwt.decode(request.headers["authorization"]): return "Unauthorized", 401
 
     #! update user info
 
