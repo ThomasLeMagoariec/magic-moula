@@ -9,7 +9,9 @@ function Dashboard() {
     return (
     <>
     <Header />
-    <Footer />
+
+    <h1 className="balance">0.00$</h1>
+
     </>
     )
 
