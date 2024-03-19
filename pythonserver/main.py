@@ -1,5 +1,8 @@
 from flask import Flask, request
+<<<<<<< HEAD
 import jwt
+=======
+>>>>>>> 535f93d96c48df17dc41f1abbc55fc40116e283a
 from flask_cors import CORS
 import mysql.connector
 from dotenv import load_dotenv
@@ -176,15 +179,15 @@ def get_transactions():
 if __name__ == '__main__':
     load_dotenv()
 
-    cnx = mysql.connector.connect(
-        host=os.environ["DB_HOST"],
-        user="root",
-        password=os.environ["DB_PWD"],
-        unix_socket="/var/run/mysqld/mysqld.sock"  
-    )
-    #cnx = mysql.connector.connect(host='localhost',database='magicmoula',user='root')
+    # cnx = mysql.connector.connect(
+    #     host=os.environ["DB_HOST"],
+    #     user="root",
+    #     password=os.environ["DB_PWD"],
+    #     unix_socket="/var/run/mysqld/mysqld.sock"  
+    # )
+    cnx = mysql.connector.connect(host='localhost',database='magicmoula',user='root')
     cursor = cnx.cursor()
-    cursor.execute("USE prod_magic_moula")
+    # cursor.execute("USE prod_magic_moula")
 
     app.run(host="0.0.0.0",debug=True)
     cursor.close()
