@@ -20,13 +20,19 @@ const Login = () => {
   }).then(response => {
       if (response.status === 200) {
         localStorage.setItem('connected', "true")
-        navigate('/dashboard')
+        return response.json()
       } else {
         localStorage.setItem('connected', "false")
       }
     }
-  )
+  ).then(data => {
+    if (data) {
+      localStorage.setItem('token', data.token)
+      navigate('/dashboard')
+    }
+  })
   }
+  
   
 
   return (
