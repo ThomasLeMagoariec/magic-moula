@@ -1,5 +1,4 @@
-from flask import Flask, session, request
-from flask_session import Session
+from flask import Flask, request
 from flask_cors import CORS
 import mysql.connector
 from dotenv import load_dotenv
