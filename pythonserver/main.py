@@ -9,7 +9,6 @@ app = Flask(__name__)
 cors = CORS(app, resources={r"*": {"origins": "*"}})
 
 public_key = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz3z3z3z3z3z3z3z3z3z3\n"
-private_key = "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDPfPfPfPfPfPfPf\n"
 
 """
 ! API Endpoints
@@ -46,8 +45,8 @@ def create_account():
     # Check if email already exists in the database
     cursor.execute("SELECT * FROM usr_accounts WHERE email=%s", (data["email"],))
     res = cursor.fetchall()
-    if len(res) > 0:
-        return "Email already exists", 400
+
+    if len(res) > 0: return "Email already exists", 400
     
     # Add account to database
     cursor.execute("INSERT INTO usr_accounts (name, last_name, email, password) VALUES (%s, %s, %s, %s)", (data["name"], data["last_name"], data["email"], data["password"]))
@@ -58,7 +57,7 @@ def create_account():
 @app.route("/login", methods=["POST"])
 def login():
     data = request.json
-    app.logger.error(data)
+
     if not "password" in data: return "Password is required", 400
     if not "email" in data: return "Email is required", 400
 
@@ -74,10 +73,11 @@ def login():
 @app.route("/update_user_info", methods=["POST"])
 def update_user_info():
     data = request.json
+    
+    id_ = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256")["id"]
 
-    if not "id" in data: return "ID is required", 400
+    if not id_: return "ID is required", 400
 
-    if not jwt.decode(request.headers["authorization"]): return "Unauthorized", 401
 
     #! update user info
 
@@ -97,19 +97,17 @@ def update_user_info():
 
 @app.route("/delete_user", methods=["DELETE"])
 def delete_user():
-    data = request.json
+    id_ = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256").get("id")
 
-    if not "id" in data: return "ID is required", 400
+    if not id_: return "ID is required", 400
 
-    cursor.execute("DELETE FROM usr_accounts WHERE id=%s", (data["id"],))
+    cursor.execute("DELETE FROM usr_accounts WHERE id=%s", (id_,))
     cnx.commit()
     return "success", 200
 
 @app.route('/get_user_info', methods=["GET"])
 def get_user_info():
-    data = request.json
-
-    if not "id" in data: return "ID is required", 400
+    data = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256")
 
     cursor.execute("SELECT name, last_name, email FROM usr_accounts WHERE id=%s", (data["id"],))
 
@@ -117,22 +115,23 @@ def get_user_info():
 
 @app.route("/get_balance", methods=["GET"])
 def get_balance():
-    data = request.json
+    id_ = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256").get("id")
 
-    if not "id" in data: return "ID is required", 400
+    if not id_: return "ID is required", 400
 
-    cursor.execute("SELECT balance FROM usr_accounts WHERE id=%s", (data["id"],))
+    cursor.execute("SELECT balance FROM usr_accounts WHERE id=%s", (id_,))
 
     return str(cursor.fetchall()[0][0]), 200
 
 @app.route("/update_balance", methods=["POST"])
 def update_balance():
     data = request.json
+    id_ = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256").get("id")
 
-    if not "id" in data: return "ID is required", 400
+    if not id_: return "ID is required", 400
     if not "amount" in data: return "Amount is required", 400
 
-    cursor.execute("UPDATE usr_accounts SET balance=%s WHERE id=%s", (data["amount"], data["id"]))
+    cursor.execute("UPDATE usr_accounts SET balance=%s WHERE id=%s", (data["amount"], id_))
 
     cnx.commit()
     return "success", 200
@@ -166,9 +165,9 @@ def transfer():
 
 @app.route("/get_transactions", methods=["GET"])
 def get_transactions():
-    data = request.json
+    id_ = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256").get("id")
 
-    if not "id" in data: return "ID is required", 400
+    if not id_: return "ID is required", 400
 
     cursor.execute("SELECT * FROM transactions WHERE sender_account_id=%s OR receiver_account_id=%s", (data["id"], data["id"]))
     return str(cursor.fetchall()), 200
@@ -186,6 +185,6 @@ if __name__ == '__main__':
     cursor = cnx.cursor()
     # cursor.execute("USE prod_magic_moula")
 
-    app.run(host="0.0.0.0",debug=True)
+    app.run(host="0.0.0.0", debug=True)
     cursor.close()
     cnx.close()
