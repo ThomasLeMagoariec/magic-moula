@@ -2,7 +2,7 @@ from flask import Flask, session, request
 from flask_session import Session
 from flask_cors import CORS
 import mysql.connector
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 import os
 
 app = Flask(__name__)
@@ -38,8 +38,14 @@ def create_account():
     if not "email" in data: return "Email is required", 400
     if not "name" in data: return "Name is required", 400
     if not "last_name" in data: return "Last Name is required", 400
-    #Rajoute une verification que l'email n'est pas deja dans la base de donnée
-    #! add account to database
+    
+    # Check if email already exists in the database
+    cursor.execute("SELECT * FROM usr_accounts WHERE email=%s", (data["email"],))
+    res = cursor.fetchall()
+    if len(res) > 0:
+        return "Email already exists", 400
+    
+    # Add account to database
     cursor.execute("INSERT INTO usr_accounts (name, last_name, email, password) VALUES (%s, %s, %s, %s)", (data["name"], data["last_name"], data["email"], data["password"]))
 
     cnx.commit()
@@ -160,17 +166,17 @@ def get_transactions():
     return str(cursor.fetchall()), 200
 
 if __name__ == '__main__':
-    # load_dotenv()
+    load_dotenv()
 
-    # cnx = mysql.connector.connect(
-    #     host=os.environ["DB_HOST"],
-    #     user="root",
-    #     password=os.environ["DB_PWD"],
-    #     unix_socket="/var/run/mysqld/mysqld.sock"  
-    # )
-    cnx = mysql.connector.connect(host='localhost',database='magicmoula',user='root')
+    cnx = mysql.connector.connect(
+        host=os.environ["DB_HOST"],
+        user="root",
+        password=os.environ["DB_PWD"],
+        unix_socket="/var/run/mysqld/mysqld.sock"  
+    )
+    #cnx = mysql.connector.connect(host='localhost',database='magicmoula',user='root')
     cursor = cnx.cursor()
-    # cursor.execute("USE prod_magic_moula")
+    cursor.execute("USE prod_magic_moula")
 
     app.run(host="0.0.0.0",debug=True)
     cursor.close()
