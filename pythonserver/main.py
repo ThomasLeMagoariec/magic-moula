@@ -1,8 +1,5 @@
 from flask import Flask, request
-<<<<<<< HEAD
 import jwt
-=======
->>>>>>> 535f93d96c48df17dc41f1abbc55fc40116e283a
 from flask_cors import CORS
 import mysql.connector
 from dotenv import load_dotenv
