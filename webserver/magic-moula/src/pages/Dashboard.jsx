@@ -7,6 +7,7 @@ function Dashboard() {
     const navigate = useNavigate();
     const [balance, setBalance] = useState(0.00)
     const [name, setName] = useState("");
+    const [transactions, setTransactions] = useState([{}]);
 
     fetch("http://localhost:5000/get_user_info", {
         method: "GET",
@@ -25,7 +26,7 @@ function Dashboard() {
         }
     });
 
-    const get_transactions = () => fetch("http://localhost:5000/get_recent_transactions", {
+    const get_transactions = fetch("http://localhost:5000/get_recent_transactions", {
         method: "GET",
         headers: {
             'Content-Type': 'application/json',
@@ -37,9 +38,8 @@ function Dashboard() {
         }
     }).then((data) => {
         if (data) {
-            console.log(data);
+            setTransactions(data);
         }
-
     });
 
     const disconnect = () => {
@@ -48,10 +48,10 @@ function Dashboard() {
         navigate("/")
     }
 
+
     return (
     <>
     <Header />
-    <button className="btn btn-primary" onClick={get_transactions}>get transac</button>
     <div style={{background: "#F7EDE2", height: '81vh'}}>
     <h1>Hello, {name}</h1>
     <div className="container">
@@ -66,7 +66,13 @@ function Dashboard() {
             <div className="col" >
                 <div style={{padding: '20px',display: 'flex',borderRadius: '30px', justifyContent: 'space-between', width: '100%', height: '330px', backgroundColor: '#283044'}}>
                 <h1 style={{color: 'white', fontSize: '30px'}}>Recent Transactions</h1>
-
+                    {transactions.map((transaction) => (
+                        <div key={transaction.id}>
+                            <p>{transaction.date}</p>
+                            <p>{transaction.description}</p>
+                            <p>{transaction.amount}</p>
+                        </div>
+                    ))}
                 
                 </div>
             </div>

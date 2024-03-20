@@ -132,14 +132,10 @@ def get_balance():
 def update_balance():
     data = request.json
 
-    if not request.get("authorization"): return "ID is required", 400
-
-    id_ = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256").get("id")
-
-    if not id_: return "ID is required", 400
+    if not "id" in data: return "ID is required", 400
     if not "amount" in data: return "Amount is required", 400
 
-    cursor.execute("UPDATE usr_accounts SET balance=%s WHERE id=%s", (data["amount"], id_))
+    cursor.execute("UPDATE usr_accounts SET balance=%s WHERE id=%s", (data["amount"], data["id"]))
 
     cnx.commit()
     return "success", 200
@@ -189,10 +185,25 @@ def get_recent_transactions():
     cursor.execute("SELECT * FROM transactions WHERE sender_account_id=%s OR receiver_account_id=%s ORDER BY id LIMIT 10", (id_, id_))
     
     transactions = []
-    for x in cursor.fetchall():
+    res = cursor.fetchall()
+    for x in res:
         transactions.append(x)
 
     return transactions, 200
+
+@app.route("/get_admin_data")
+def get_admin_data():
+    cursor.execute("SELECT * FROM usr_accounts")
+    res = cursor.fetchall()
+
+    return {"data": res}, 200
+
+@app.route("/total_money")
+def total_money():
+    cursor.execute("SELECT SUM(balance) FROM usr_accounts")
+    res = cursor.fetchall()
+
+    return {"total": res[0][0]}, 200
 
 if __name__ == '__main__':
     load_dotenv()
