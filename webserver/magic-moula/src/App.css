@@ -1,12 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
-
+* {
+    font-family: 'Poppins', sans-serif;
+    overflow-y: hidden;
+}
 
 .btn-primary {
     background-color: #8A7968 !important;
     border: none !important;
-}
-* {
-    font-family: 'Poppins', sans-serif;
-    overflow-y: hidden;
 }

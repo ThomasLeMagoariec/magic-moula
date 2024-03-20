@@ -9,8 +9,8 @@ const Home = () => {
   return (
     <>
     <Header />
-    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', backgroundColor: "#F7EDE2"}}>
-      <button onClick={() => navigate('/login')} className='btn btn-primary'>Login</button>
+    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', backgroundColor: "#F7EDE2"}}>
+      <button onClick={() => navigate('/login')} className='btn btn-primary btn-lg' style={{marginBottom: '250px', fontSize: '3rem', padding: '30px'}}>Login</button>
     </div>
     <Footer />
     </>

@@ -33,6 +33,7 @@ def index():
     return "Hello, " + data["name"] + " " + data["last_name"]
 
 
+
 @app.route("/create_account", methods=["POST"])
 def create_account():
     data = request.json
@@ -107,11 +108,15 @@ def delete_user():
 
 @app.route('/get_user_info', methods=["GET"])
 def get_user_info():
-    data = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256")
+    id_ = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256").get("id")
 
-    cursor.execute("SELECT name, last_name, email FROM usr_accounts WHERE id=%s", (data["id"],))
+    if not id_: return "ID is required", 400
 
-    return str(cursor.fetchall()), 200
+    cursor.execute("SELECT name, last_name, email, balance FROM usr_accounts WHERE id=%s", (id_,))
+
+    res = cursor.fetchall()[0]
+
+    return {"name": res[0], "last_name": res[1], "email": res[2], "balance": res[3]}, 200
 
 @app.route("/get_balance", methods=["GET"])
 def get_balance():
@@ -126,6 +131,9 @@ def get_balance():
 @app.route("/update_balance", methods=["POST"])
 def update_balance():
     data = request.json
+
+    if not request.get("authorization"): return "ID is required", 400
+
     id_ = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256").get("id")
 
     if not id_: return "ID is required", 400
@@ -169,21 +177,35 @@ def get_transactions():
 
     if not id_: return "ID is required", 400
 
-    cursor.execute("SELECT * FROM transactions WHERE sender_account_id=%s OR receiver_account_id=%s", (data["id"], data["id"]))
+    cursor.execute("SELECT * FROM transactions WHERE sender_account_id=%s OR receiver_account_id=%s", (id_, id_))
     return str(cursor.fetchall()), 200
+
+@app.route("/get_recent_transactions")
+def get_recent_transactions():
+    id_ = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256").get("id")
+
+    if not id_: return "ID is required", 400
+
+    cursor.execute("SELECT * FROM transactions WHERE sender_account_id=%s OR receiver_account_id=%s ORDER BY id LIMIT 10", (id_, id_))
+    
+    transactions = []
+    for x in cursor.fetchall():
+        transactions.append(x)
+
+    return transactions, 200
 
 if __name__ == '__main__':
     load_dotenv()
 
-    # cnx = mysql.connector.connect(
-    #     host=os.environ["DB_HOST"],
-    #     user="root",
-    #     password=os.environ["DB_PWD"],
-    #     unix_socket="/var/run/mysqld/mysqld.sock"  
-    # )
-    cnx = mysql.connector.connect(host='localhost',database='magicmoula',user='root')
+    cnx = mysql.connector.connect(
+        host=os.environ["DB_HOST"],
+        user="root",
+        password=os.environ["DB_PWD"],
+        unix_socket="/var/run/mysqld/mysqld.sock"  
+    )
+    # cnx = mysql.connector.connect(host='localhost',database='magicmoula',user='root')
     cursor = cnx.cursor()
-    # cursor.execute("USE prod_magic_moula")
+    cursor.execute("USE prod_magic_moula")
 
     app.run(host="0.0.0.0", debug=True)
     cursor.close()

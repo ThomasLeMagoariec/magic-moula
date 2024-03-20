@@ -32,13 +32,13 @@ const Login = () => {
     }
   })
   }
-  
+
   
 
   return (
     <>
     <Header />
-    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '70vh', backgroundColor: "#F7EDE2"}}>
+    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '72vh', backgroundColor: "#F7EDE2"}}>
       <div style={{border: 'solid 3px #283044',width: '400px', padding: "20px", display: 'flex',flexDirection:'column', alignItems: 'center'}} className='rounded-4 bg-light'>
         <h1>Login</h1>
         <div className='d-grid gap-2 col-12 mx-auto'>
