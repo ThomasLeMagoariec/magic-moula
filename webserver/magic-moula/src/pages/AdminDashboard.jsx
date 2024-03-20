@@ -24,15 +24,21 @@ function AdminDashboard() {
             }
         });
 
-        var total = 0.00;
+    }, []);
+
+    useEffect(() => {
+        var total = 0;
         accounts.forEach((account) => {
             console.log(account[5])
+            if (account[5] === null) account[5] = 0;
             total += parseFloat(account[5]);
         })
 
         setTotalAmount(total);
         setNumber(accounts.length);
-    }, []);
+    }, [accounts])
+
+    
 
     const setBal = (id) => {
         const amount = window.prompt("Enter the amount to set the balance to: ");
