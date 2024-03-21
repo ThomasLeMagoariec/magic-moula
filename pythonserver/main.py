@@ -114,7 +114,7 @@ def get_user_info():
 
     if not id_: return "ID is required", 400
 
-    cursor.execute("SELECT name, last_name, email, balance FROM usr_accounts WHERE id=%s", (id_,))
+    cursor.execute("SELECT id, name, last_name, email, balance FROM usr_accounts WHERE id=%s", (id_,))
 
     res = cursor.fetchall()[0]
     cursor.close() 
@@ -122,7 +122,7 @@ def get_user_info():
     
     
 
-    return {"name": res[0], "last_name": res[1], "email": res[2], "balance": res[3]}, 200
+    return {"name": res[1], "last_name": res[2], "email": res[3], "balance": res[4], "id": res[0]}, 200
 
 @app.route("/get_balance", methods=["GET"])
 def get_balance():

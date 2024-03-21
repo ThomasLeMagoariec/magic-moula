@@ -96,6 +96,7 @@ function AdminDashboard() {
                         </div>
                     ))}
                 </div>
+                <button className="btn btn-danger" onClick={() => navigate("/")} style={{position: "absolute", bottom: 0}}>home</button>
             </div>
         </>
     );
