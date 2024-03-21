@@ -109,6 +109,7 @@ def delete_user():
 
 @app.route('/get_user_info', methods=["GET"])
 def get_user_info():
+    cursor = cnx.cursor() 
     id_ = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256").get("id")
 
     if not id_: return "ID is required", 400
@@ -116,6 +117,10 @@ def get_user_info():
     cursor.execute("SELECT name, last_name, email, balance FROM usr_accounts WHERE id=%s", (id_,))
 
     res = cursor.fetchall()[0]
+    cursor.close() 
+
+    
+    
 
     return {"name": res[0], "last_name": res[1], "email": res[2], "balance": res[3]}, 200
 
@@ -182,14 +187,17 @@ def get_transactions():
 
 @app.route("/get_recent_transactions")
 def get_recent_transactions():
+    cursor = cnx.cursor() 
     id_ = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256").get("id")
 
     if not id_: return "ID is required", 400
 
-    cursor.execute("SELECT * FROM transactions WHERE sender_account_id=%s OR receiver_account_id=%s ORDER BY id LIMIT 10", (id_, id_))
-    
+    cursor.execute("SELECT transactions.amount, transactions.category, transactions.message, transactions.id, usr_accounts.last_name FROM transactions JOIN usr_accounts ON (transactions.sender_account_id = usr_accounts.id OR transactions.receiver_account_id = usr_accounts.id) WHERE transactions.sender_account_id = %s OR transactions.receiver_account_id = %s ORDER BY transactions.id LIMIT 10;", (id_, id_))
     transactions = []
     res = cursor.fetchall()
+    cursor.close() 
+
+    
     for x in res:
         transactions.append(x)
 
@@ -212,15 +220,16 @@ def total_money():
 if __name__ == '__main__':
     load_dotenv()
 
-    cnx = mysql.connector.connect(
-        host=os.environ["DB_HOST"],
-        user="root",
-        password=os.environ["DB_PWD"],
-        unix_socket="/var/run/mysqld/mysqld.sock"  
-    )
-    # cnx = mysql.connector.connect(host='localhost',database='magicmoula',user='root')
+    # cnx = mysql.connector.connect(
+    #     host=os.environ["DB_HOST"],
+        # database='prod_magic_moula',
+    #     user="root",
+    #     password=os.environ["DB_PWD"],
+    #     unix_socket="/var/run/mysqld/mysqld.sock"  
+    # )
+    cnx = mysql.connector.connect(host='localhost',database='magicmoula',user='root')
     cursor = cnx.cursor()
-    cursor.execute("USE prod_magic_moula")
+    # cursor.execute("USE prod_magic_moula")
 
     app.run(host="0.0.0.0", debug=True)
     cursor.close()

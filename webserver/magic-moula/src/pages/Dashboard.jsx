@@ -8,7 +8,7 @@ function Dashboard() {
     const [balance, setBalance] = useState(0.00)
     const [name, setName] = useState("");
     const [transactions, setTransactions] = useState([{}]);
-
+    useEffect(() => {
     fetch("http://localhost:5000/get_user_info", {
         method: "GET",
         headers: {
@@ -25,6 +25,7 @@ function Dashboard() {
             setBalance(data.balance);
         }
     });
+    }, []);
 
     useEffect(() => {
         fetch("http://localhost:5000/get_recent_transactions", {
@@ -40,6 +41,7 @@ function Dashboard() {
         }).then((data) => {
             if (data) {
                 setTransactions(data);
+                console.log(data)
             }
         });
     }, []);
@@ -55,24 +57,25 @@ function Dashboard() {
     <>
     <Header />
     <div style={{background: "#F7EDE2", height: '81vh'}}>
-    <h1>Hello, {name}</h1>
+    
     <div className="container">
         <div className="row" style={{paddingTop: '35px'}}>
             <div className="col">
                 <div style={{display: 'flex',flexDirection: 'column',borderRadius: '30px', justifyContent: 'space-around', width: '100%', height: '155px', backgroundColor: '#283044', padding: '30px'}}>
-                    <h1 style={{color: 'white', fontSize: '30px'}}>Balance</h1>
+                    <h1 style={{color: 'white', fontSize: '30px'}}>Hello, {name}</h1>
                     <h1 style={{color: 'white',textAlign:'right', fontSize: '35px'}}>{balance} €</h1>
                 </div>
                 <div style={{display: 'flex',borderRadius: '30px', justifyContent: 'space-between', width: '100%', height: '155px',marginTop:'20px', backgroundColor: '#283044'}}></div>
             </div>
             <div className="col" >
-                <div style={{padding: '20px',display: 'flex',borderRadius: '30px', justifyContent: 'space-between', width: '100%', height: '330px', backgroundColor: '#283044'}}>
-                <h1 style={{color: 'white', fontSize: '30px'}}>Recent Transactions</h1>
+                <div style={{padding: '20px',display: 'flex',flexDirection: 'column', borderRadius: '30px', width: '100%', height: '330px', backgroundColor: '#283044'}}>
+                <h1 style={{color: 'white', fontSize: '30px', marginBottom: '10px'}}>Recent Transactions</h1>
                     {transactions.map((transaction) => (
-                        <div key={transaction.id}>
-                            <p>{transaction.date}</p>
-                            <p>{transaction.description}</p>
-                            <p>{transaction.amount}</p>
+                        <div style={{color: 'white', display: 'flex', justifyContent: 'space-between'}} key={transaction[5]}>
+                            <p>{"Sender : "+transaction[0]}</p>
+                            <p>{"Receiver : "+transaction[1]}</p>
+                            <p>{"Amount : " + transaction[2]}</p>
+                            <p>{"Lastname : "+ transaction}</p>
                         </div>
                     ))}
                 
