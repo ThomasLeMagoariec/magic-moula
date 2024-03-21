@@ -187,15 +187,13 @@ def get_transactions():
 
 @app.route("/get_recent_transactions")
 def get_recent_transactions():
-    cursor = cnx.cursor() 
     id_ = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256").get("id")
 
     if not id_: return "ID is required", 400
 
-    cursor.execute("SELECT transactions.amount, transactions.category, transactions.message, transactions.id, usr_accounts.last_name FROM transactions JOIN usr_accounts ON (transactions.sender_account_id = usr_accounts.id OR transactions.receiver_account_id = usr_accounts.id) WHERE transactions.sender_account_id = %s OR transactions.receiver_account_id = %s ORDER BY transactions.id LIMIT 10;", (id_, id_))
+    cursor.execute("SELECT transactions.amount, transactions.category, transactions.message, transactions.id, usr_accounts.last_name, sender_account_id FROM transactions JOIN usr_accounts ON ((transactions.receiver_account_id = usr_accounts.id AND transactions.sender_account_id = %s) OR (transactions.sender_account_id = usr_accounts.id AND transactions.receiver_account_id = %s)) WHERE transactions.sender_account_id = %s OR transactions.receiver_account_id = %s ORDER BY transactions.id LIMIT 10;", (id_, id_,id_, id_))
     transactions = []
     res = cursor.fetchall()
-    cursor.close() 
 
     
     for x in res:
@@ -228,7 +226,7 @@ if __name__ == '__main__':
     #     unix_socket="/var/run/mysqld/mysqld.sock"  
     # )
     cnx = mysql.connector.connect(host='localhost',database='magicmoula',user='root')
-    cursor = cnx.cursor()
+    cursor = cnx.cursor(buffered=True)
     # cursor.execute("USE prod_magic_moula")
 
     app.run(host="0.0.0.0", debug=True)
