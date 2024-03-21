@@ -4,6 +4,7 @@ from flask_cors import CORS
 import mysql.connector
 from dotenv import load_dotenv
 import os
+import time
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"*": {"origins": "*"}})
@@ -126,6 +127,8 @@ def get_balance():
 
     cursor.execute("SELECT balance FROM usr_accounts WHERE id=%s", (id_,))
 
+
+    time.sleep(1)
     return str(cursor.fetchall()[0][0]), 200
 
 @app.route("/update_balance", methods=["POST"])
@@ -152,14 +155,15 @@ def transfer():
 
     cursor.execute("SELECT balance FROM usr_accounts WHERE id=%s", (data["to"],))
     recv_bal = cursor.fetchall()[0][0]
+    if recv_bal == None: recv_bal = 0
     
     cursor.execute("SELECT balance FROM usr_accounts WHERE id=%s", (data["from"],))
     sender_bal = cursor.fetchall()[0][0]
 
-    if sender_bal < int(data["amount"]): return "Insufficient funds", 400
+    if sender_bal < int(data["amount"]) and data["from"] != 1: return "Insufficient funds", 400
 
     cursor.execute("UPDATE usr_accounts SET balance=%s WHERE id=%s", (recv_bal + int(data["amount"]), data["to"]))
-    cursor.execute("UPDATE usr_accounts SET balance=%s WHERE id=%s", (sender_bal - int(data["amount"]), data["from"]))
+    if data["from"] != 1: cursor.execute("UPDATE usr_accounts SET balance=%s WHERE id=%s", (sender_bal - int(data["amount"]), data["from"]))
 
     cursor.execute("INSERT INTO transactions (sender_account_id, receiver_account_id, amount, category, message) VALUES (%s, %s, %s, %s, %s)", (data["from"], data["to"], data["amount"], data["category"], data["message"]))
 

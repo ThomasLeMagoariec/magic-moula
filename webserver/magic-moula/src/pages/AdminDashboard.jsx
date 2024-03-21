@@ -40,8 +40,8 @@ function AdminDashboard() {
 
     
 
-    const setBal = (id) => {
-        const amount = window.prompt("Enter the amount to set the balance to: ");
+    const setBal = async (id, amount) => {
+        if (amount == undefined) amount = window.prompt("Enter the amount to set the balance to: ");
         fetch("http://localhost:5000/update_balance", {
             method: "POST",
             headers: {
@@ -51,25 +51,51 @@ function AdminDashboard() {
                 "amount": amount,
                 "id": id
             })
+        });
+    }
+
+    const setBalPublic = async (id) => {
+        const amount = window.prompt("Enter the amount to add: ");
+
+        fetch("http://localhost:5000/transfer", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "from": 1,
+                "to": id,
+                "amount": amount,
+                "category": "Transfer",
+                "message": "Transfer from public account"
+            })
+        }).then((response) => {
+            if (response.status === 200) {
+                window.location.reload(true);
+            }
         })
+        
     }
 
     return (
         <>
             <Header />
-            <h1>Total Money in system: €{totalAmount} ({number} accounts)</h1>
-            <br />
-            <div className="container" style={{display: "flex"}}>
-                {accounts.map((account) => (
-                    <div className="card" style={{width: "20rem", height: "200px"}}>
-                        <div className="card-body">
-                            <h5 className="card-title">{account[1]} {account[2]}</h5>
-                            <h6 className="card-subtitle mb-2 text-muted">{account[3]}</h6>
-                            <p className="card-text">Balance: {account[5]}</p>
-                            <button className="btn btn-danger" style={{position: "absolute", bottom: 0}} onClick={() => setBal(account[0])}>Set Balance</button>
+            <div className="content" style={{background: "#F7EDE2", height: "100vh"}}>
+                <h1 style={{margin: "20px"}}>{new Intl.NumberFormat("fr-FR", {style: "currency", currency: "EUR"}).format(totalAmount)}<br />{number} accounts</h1>
+                <br />
+                <div className="container" style={{display: "flex"}}>
+                    {accounts.map((account) => (
+                        <div className="card" style={{width: "20rem", height: "200px", margin: "5px"}}>
+                            <div className="card-body" style={{width: "100%"}}>
+                                <h5 className="card-title">{account[1]} {account[2]}</h5>
+                                <h6 className="card-subtitle mb-2 text-muted">{account[3]}</h6>
+                                <p className="card-text">Balance: {new Intl.NumberFormat("fr-FR", {style: "currency", currency: "EUR"}).format(account[5])}</p>
+                                <button className="btn btn-danger" style={{position: "absolute", bottom: 0, left: 0}} onClick={() => setBal(account[0])}>Set Balance</button>
+                                <button className="btn btn-danger" style={{position: "absolute", bottom: 0, right: 0}} onClick={() => setBalPublic(account[0])}>Transfer</button>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </>
     );

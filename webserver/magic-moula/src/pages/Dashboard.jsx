@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function Dashboard() {
     const navigate = useNavigate();
@@ -26,21 +26,23 @@ function Dashboard() {
         }
     });
 
-    const get_transactions = fetch("http://localhost:5000/get_recent_transactions", {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': localStorage.getItem('token')
-        }
-    }).then((response) => {
-        if (response.status === 200) {
-            return response.json()
-        }
-    }).then((data) => {
-        if (data) {
-            setTransactions(data);
-        }
-    });
+    useEffect(() => {
+        fetch("http://localhost:5000/get_recent_transactions", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': localStorage.getItem('token')
+            }
+        }).then((response) => {
+            if (response.status === 200) {
+                return response.json()
+            }
+        }).then((data) => {
+            if (data) {
+                setTransactions(data);
+            }
+        });
+    }, []);
 
     const disconnect = () => {
         localStorage.removeItem("token");
