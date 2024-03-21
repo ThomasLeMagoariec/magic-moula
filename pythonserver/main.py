@@ -114,7 +114,7 @@ def get_user_info():
 
     if not id_: return "ID is required", 400
 
-    cursor.execute("SELECT name, last_name, email, balance FROM usr_accounts WHERE id=%s", (id_,))
+    cursor.execute("SELECT id, name, last_name, email, balance FROM usr_accounts WHERE id=%s", (id_,))
 
     res = cursor.fetchall()[0]
     cursor.close() 
