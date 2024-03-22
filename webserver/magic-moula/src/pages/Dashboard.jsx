@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { useEffect, useState } from 'react';
+import flechev from '../img/flechev.png';
+import flecher from '../img/flecher.png';
 
 function Dashboard() {
     const navigate = useNavigate();
@@ -74,6 +76,7 @@ function Dashboard() {
                 <h1 style={{color: 'white', fontSize: '30px', marginBottom: '10px'}}>Recent Transactions</h1>
                     {transactions.map((transaction) => (
                         <div style={{color: 'white', display: 'flex', justifyContent: 'space-between'}} key={transaction[5]}>
+                            {transaction[7] ? <img src={flecher} />: <img src={flechev}/>}
                             {transaction[0] === id ? <p>{"Envoyer"}</p> : <p>{"Recu"}</p>}
                             <p>{"Amount : " + transaction[0]}</p>
                             <p>{"Lastname : "+ transaction}</p>

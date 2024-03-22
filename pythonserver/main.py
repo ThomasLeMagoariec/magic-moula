@@ -191,13 +191,21 @@ def get_recent_transactions():
 
     if not id_: return "ID is required", 400
 
-    cursor.execute("SELECT transactions.amount, transactions.category, transactions.message, transactions.id, usr_accounts.last_name, sender_account_id FROM transactions JOIN usr_accounts ON ((transactions.receiver_account_id = usr_accounts.id AND transactions.sender_account_id = %s) OR (transactions.sender_account_id = usr_accounts.id AND transactions.receiver_account_id = %s)) WHERE transactions.sender_account_id = %s OR transactions.receiver_account_id = %s ORDER BY transactions.id LIMIT 10;", (id_, id_,id_, id_))
+    cursor.execute("SELECT * FROM transactions WHERE transactions.sender_account_id = %s OR transactions.receiver_account_id = %s ORDER BY transactions.id LIMIT 10;", (id_, id_))
+    
     transactions = []
     res = cursor.fetchall()
-
     
     for x in res:
-        transactions.append(x)
+        sender = False
+        if x[1] == id_:
+            cursor.execute("SELECT last_name FROM usr_accounts WHERE id = %s", (x[0],))
+            sender = False
+        else:
+            cursor.execute("SELECT last_name FROM usr_accounts WHERE id = %s", (x[1],))
+            sender = True
+        res2 = cursor.fetchall()
+        transactions.append(list(x)+[res2[0][0]]+[sender])
 
     return transactions, 200
 
@@ -227,7 +235,7 @@ if __name__ == '__main__':
     )
     # cnx = mysql.connector.connect(host='localhost',database='magicmoula',user='root')
     cursor = cnx.cursor(buffered=True)
-    cursor.execute("USE prod_magic_moula")
+    # cursor.execute("USE prod_magic_moula")
 
     app.run(host="0.0.0.0", debug=True)
     cursor.close()
