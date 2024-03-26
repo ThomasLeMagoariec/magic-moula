@@ -5,6 +5,7 @@ import mysql.connector
 from dotenv import load_dotenv
 import os
 import time
+from tkinter import messagebox as mb
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"*": {"origins": "*"}})
@@ -229,8 +230,12 @@ def get_recent_transactions():
         else:
             cursor.execute("SELECT last_name FROM usr_accounts WHERE id = %s", (x[1],))
             sender = True
+
         res2 = cursor.fetchall()
-        transactions.append(list(x)+[res2[0][0]]+[sender])
+
+        open("./out.txt", "a").write(str(res2) + "\n")
+        transactions.append(list(x)+[str(res2)]+[sender])
+        # transactions.append("rien")
 
     return transactions, 200
 
