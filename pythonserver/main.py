@@ -117,12 +117,28 @@ def get_user_info():
     cursor.execute("SELECT id, name, last_name, email, balance FROM usr_accounts WHERE id=%s", (id_,))
 
     res = cursor.fetchall()[0]
-    cursor.close() 
-
     
+    cursor.execute("SELECT receiver_account_id,amount FROM transactions WHERE transactions.sender_account_id = %s ORDER BY transactions.id DESC LIMIT 2;", (id_,))
     
+    res4 = cursor.fetchall()
 
-    return {"name": res[1], "last_name": res[2], "email": res[3], "balance": res[4], "id": res[0]}, 200
+    cursor.execute("SELECT * FROM transactions WHERE transactions.sender_account_id = %s OR transactions.receiver_account_id = %s ORDER BY transactions.id LIMIT 10;", (id_, id_))
+    
+    transactions = []
+    res3 = cursor.fetchall()
+    
+    for x in res3:
+        sender = False
+        if x[1] == id_:
+            cursor.execute("SELECT last_name FROM usr_accounts WHERE id = %s", (x[0],))
+            sender = False
+        else:
+            cursor.execute("SELECT last_name FROM usr_accounts WHERE id = %s", (x[1],))
+            sender = True
+        res2 = cursor.fetchall()
+        transactions.append(list(x)+[res2[0][0]]+[sender])
+
+    return {"name": res[1], "last_name": res[2], "email": res[3], "balance": res[4], "id": res[0], "recent_transfer": res4, "transactions": transactions}, 200
 
 @app.route("/get_balance", methods=["GET"])
 def get_balance():
