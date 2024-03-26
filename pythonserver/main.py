@@ -240,14 +240,14 @@ def total_money():
 if __name__ == '__main__':
     load_dotenv()
 
-    # cnx = mysql.connector.connect(
-    #     host=os.environ["DB_HOST"],
-    #     database='prod_magic_moula',
-    #     user="root",
-    #     password=os.environ["DB_PWD"],
-    #     unix_socket="/var/run/mysqld/mysqld.sock"  
-    # )
-    cnx = mysql.connector.connect(host='localhost',database='magicmoula',user='root')
+    cnx = mysql.connector.connect(
+        host=os.environ["DB_HOST"],
+        database='prod_magic_moula',
+        user="root",
+        password=os.environ["DB_PWD"],
+        unix_socket="/var/run/mysqld/mysqld.sock"  
+    )
+    cnx = mysql.connector.connect(host='192.168.136.226',database='magicmoula',user='root')
     cursor = cnx.cursor(buffered=True)
     # cursor.execute("USE prod_magic_moula")
 
