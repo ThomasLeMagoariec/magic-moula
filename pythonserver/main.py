@@ -186,6 +186,15 @@ def get_transactions():
     cursor.execute("SELECT * FROM transactions WHERE sender_account_id=%s OR receiver_account_id=%s", (id_, id_))
     return str(cursor.fetchall()), 200
 
+@app.route("/get_recent_transfer", methods=["GET"])
+def get_recent_transfer():
+    id_ = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256").get("id")
+
+    if not id_: return "ID is required", 400
+
+    cursor.execute("SELECT receiver_account_id FROM transactions WHERE transactions.sender_account_id = %s ORDER BY transactions.id DESC LIMIT 2;", (id_))
+    return str(cursor.fetchall()), 200
+
 @app.route("/get_recent_transactions")
 def get_recent_transactions():
     id_ = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256").get("id")
@@ -231,14 +240,14 @@ def total_money():
 if __name__ == '__main__':
     load_dotenv()
 
-    cnx = mysql.connector.connect(
-        host=os.environ["DB_HOST"],
-        database='prod_magic_moula',
-        user="root",
-        password=os.environ["DB_PWD"],
-        unix_socket="/var/run/mysqld/mysqld.sock"  
-    )
-    # cnx = mysql.connector.connect(host='localhost',database='magicmoula',user='root')
+    # cnx = mysql.connector.connect(
+    #     host=os.environ["DB_HOST"],
+    #     database='prod_magic_moula',
+    #     user="root",
+    #     password=os.environ["DB_PWD"],
+    #     unix_socket="/var/run/mysqld/mysqld.sock"  
+    # )
+    cnx = mysql.connector.connect(host='localhost',database='magicmoula',user='root')
     cursor = cnx.cursor(buffered=True)
     # cursor.execute("USE prod_magic_moula")
 
