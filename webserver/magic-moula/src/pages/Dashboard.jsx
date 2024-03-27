@@ -15,6 +15,32 @@ function Dashboard() {
     const [iban, setIban] = useState("");
     const [montant, setMontant] = useState(0.00);
     const [transfer, setTransfer] = useState([{}]);
+
+    const handleSend = () => {
+        fetch("http://localhost:5000/transfer", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': localStorage.getItem('token')
+            },
+            body: JSON.stringify({
+                from: id,
+                to: iban,
+                amount: montant,
+                category: "transfer",
+                message: ""
+            })
+        }).then((response) => {
+            if (response.status === 200) {
+                return response.json()
+            }
+        }).then((data) => {
+            if (data) {
+                setTransfer(data)
+            }
+        });
+        }
+
     useEffect(() => {
     fetch("http://localhost:5000/get_user_info", {
         method: "GET",
@@ -124,12 +150,15 @@ function Dashboard() {
                             <input id='password' type="password" placeholder="Mot de passe" onChange={(ev) => setMontant(ev.target.value)} className="form-control" />
                             <label htmlFor="password" className="form-label">Amount</label>
                         </div>
-                        <button className='btn btn-primary'>Send</button>
+                        <button className='btn btn-primary' onClick={handleSend}>Send</button>
                         </div>
-                        {loading ? null : transfer.map((transaction) => (
-                            console.log(transaction)
-                        ))
-                        }
+                        {loading ? null : transfer.map((transaction2) => (
+                            <div>
+                                <a>Iban : {transaction2[0]}</a>
+                                <a>Amount : {transaction2[1]}</a>
+                                <button className='btn btn-primary'>ReSend</button>
+                            </div>)
+                        )}
                     </div>
             </div>
             <div className='col'>
