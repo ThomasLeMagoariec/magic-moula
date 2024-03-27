@@ -67,31 +67,6 @@ function Dashboard() {
 
 
 
-    const [montant, setMontant] = useState(0.00);
-    const [transfer, setTransfer] = useState([{}]);
-    useEffect(() => {
-    fetch("http://localhost:5000/get_user_info", {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': localStorage.getItem('token')
-        }
-    }).then((response) => {
-        if (response.status === 200) {
-            return response.json()
-        }
-    }).then((data) => {
-        if (data) {
-            setName(data.name)
-            setBalance(data.balance);
-            setId(data.id)
-            setTransactions(data.transactions);
-            setTransfer(data.recent_transfer);
-                console.log(data)
-                setLoading(false)
-        }
-    });
-    }, []);
 
     const disconnect = () => {
         localStorage.removeItem("token");
