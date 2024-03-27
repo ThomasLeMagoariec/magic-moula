@@ -123,7 +123,7 @@ def get_user_info():
     
     res4 = cursor.fetchall()
 
-    cursor.execute("SELECT * FROM transactions WHERE transactions.sender_account_id = %s OR transactions.receiver_account_id = %s ORDER BY transactions.id LIMIT 10;", (id_, id_))
+    cursor.execute("SELECT * FROM transactions WHERE transactions.sender_account_id = %s OR transactions.receiver_account_id = %s ORDER BY transactions.id LIMIT 5;", (id_, id_))
     
     transactions = []
     res3 = cursor.fetchall()
@@ -263,7 +263,7 @@ if __name__ == '__main__':
         password=os.environ["DB_PWD"],
         unix_socket="/var/run/mysqld/mysqld.sock"  
     )
-    cnx = mysql.connector.connect(host='192.168.136.226',database='magicmoula',user='root')
+    # cnx = mysql.connector.connect(host='192.168.136.226',database='magicmoula',user='root')
     cursor = cnx.cursor(buffered=True)
     # cursor.execute("USE prod_magic_moula")
 

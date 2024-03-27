@@ -39,42 +39,6 @@ function Dashboard() {
     });
     }, []);
 
-    // useEffect(() => {
-    //     fetch("http://localhost:5000/get_recent_transactions", {
-    //         method: "GET",
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'authorization': localStorage.getItem('token')
-    //         }
-    //     }).then((response) => {
-    //         if (response.status === 200) {
-    //             return response.json()
-    //         }
-    //     }).then((data) => {
-    //         if (data) {
-    //             setTransactions(data);
-    //             console.log(data)
-    //         }
-    //     });
-    //     fetch("http://localhost:5000/get_recent_transfer", {
-    //         method: "GET",
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'authorization': localStorage.getItem('token')
-    //         }
-    //     }).then((response) => {
-    //         if (response.status === 200) {
-    //             return response.json()
-    //         }
-    //     }).then((data) => {
-    //         if (data) {
-    //             setTransfer(data);
-    //             console.log(data)
-    //             setLoading(false)
-    //         }
-    //     });
-    // }, []);
-
     const disconnect = () => {
         localStorage.removeItem("token");
         localStorage.setItem("connected", "false");
@@ -100,8 +64,8 @@ function Dashboard() {
                 <div style={{padding: '25px',display: 'flex',flexDirection: 'column', borderRadius: '30px', width: '100%', height: '440px', backgroundColor: '#283044'}}>
                 <h1 style={{color: 'white', fontSize: '30px', marginBottom: '10px'}}>Recent Transactions</h1>
                     {loading ? null : transactions.map((transaction) => (
-                        <div style={{color: 'black',padding: '10px',borderRadius: '10px',backgroundColor: "#69a197" ,display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '19px'}} key={transaction[5]}>
-                            {transaction[7] ? <img src={flecher} height={"40px"}/>: <img src={flechev}/>}
+                        <div style={{color: 'black',padding: '10px',borderRadius: '10px',backgroundColor: "#69a197" ,display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '19px', margin: '3px'}} key={transaction[5]}>
+                            {transaction[7] ? <img src={flecher} height={"40px"}/>: <img src={flechev} height={"40px"}/>}
                             <a>{"Type: " + transaction[3]}</a>
                             {transaction[7] ? <a>{"Envoyer à " + transaction[6]}</a> : <a>{"Recu de "+ transaction[6]}</a>}
                             <a>{ transaction[0]+" €"}</a>
@@ -118,7 +82,7 @@ function Dashboard() {
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                         <div className="border border-2 rounded-3 form-floating m-2">
                             <input id='password' type="password" placeholder="Mot de passe" onChange={(ev) => setIban(ev.target.value)} className="form-control" />
-                            <label htmlFor="password" className="form-label">Iban</label>
+                            <label htmlFor="password" className="form-label">IBAN</label>
                         </div>
                         <div className="border border-2 rounded-3 form-floating mt-2 mb-2">
                             <input id='password' type="password" placeholder="Mot de passe" onChange={(ev) => setMontant(ev.target.value)} className="form-control" />
@@ -131,7 +95,7 @@ function Dashboard() {
                         ))
                         }
                     </div>
-            </div>
+            </div>  
             <div className='col'>
                 <div style={{display: 'flex',borderRadius: '30px', justifyContent: 'space-between', width: '100%', height: '350px', backgroundColor: '#283044'}}></div>
             </div>
