@@ -17,7 +17,7 @@ const Header = () => {
   return (
     <>
     <div style={{height: '180px', width: '100%',display: 'flex',flexDirection:'row',alignItems: 'center',justifyContent: 'center', backgroundColor: '#283044'}}>
-      <img onClick={() => navigate('/')} src={logo} alt="logo" style={{height: '170px', width: '170px'}} />
+      <img onClick={() => navigate('/')} src={logo} alt="logo" style={{height: '170px', width: '170px', cursor: 'pointer'}} />
     </div>
     {connected ? <button className="btn btn-danger dc" onClick={disconnect} style={{position: 'absolute', right: "20px", top: '66px'}}>Disconnect</button>: null}
     </>

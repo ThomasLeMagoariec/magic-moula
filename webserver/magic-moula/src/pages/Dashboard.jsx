@@ -13,6 +13,42 @@ function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [id, setId] = useState(0);
     const [iban, setIban] = useState("");
+    // useEffect(() => {
+    //     fetch("http://localhost:5000/get_recent_transactions", {
+    //         method: "GET",
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'authorization': localStorage.getItem('token')
+    //         }
+    //     }).then((response) => {
+    //         if (response.status === 200) {
+    //             return response.json()
+    //         }
+    //     }).then((data) => {
+    //         if (data) {
+    //             setTransactions(data);
+    //             console.log(data)
+    //         }
+    //     });
+    //     fetch("http://localhost:5000/get_recent_transfer", {
+    //         method: "GET",
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'authorization': localStorage.getItem('token')
+    //         }
+    //     }).then((response) => {
+    //         if (response.status === 200) {
+    //             return response.json()
+    //         }
+    //     }).then((data) => {
+    //         if (data) {
+    //             setTransfer(data);
+    //             console.log(data)
+    //             setLoading(false)
+    //         }
+    //     });
+    // }, []);
+
     const [montant, setMontant] = useState(0.00);
     const [transfer, setTransfer] = useState([{}]);
     useEffect(() => {
