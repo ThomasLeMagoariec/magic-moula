@@ -19,11 +19,19 @@ const Paiement = () => {
     const handlelogin = () => {
         if (localStorage.getItem('connected') === 'true') {
             return (<>
+            <div className="row">
+              <div className="col">
             {command.map((item) => {
-                return <div>
+                return <div key={item.name}>
+                  
                     <h1>{item.name}</h1>
                 </div>
             })}
+            </div>
+            <div className="col">
+                    <button className="btn btn-success">Pay</button>
+                  </div>
+                  </div>
             </>)
         } else {
             return <LoginComp />

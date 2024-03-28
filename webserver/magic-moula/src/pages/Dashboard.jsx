@@ -97,7 +97,7 @@ function Dashboard() {
                             {transaction[7] ? <img src={flecher} height={"40px"}/>: <img src={flechev} height={"40px"}/>}
                             <a>{"Type: " + transaction[3]}</a>
                             {transaction[7] ? <a>{"Envoyer à " + transaction[6]}</a> : <a>{"Recu de "+ transaction[6]}</a>}
-                            <a>{ transaction[0]+" €"}</a>
+                            <a>{ transaction[2]+" €"}</a>
                         </div>
                     ))}
                 
