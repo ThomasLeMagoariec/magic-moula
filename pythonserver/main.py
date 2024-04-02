@@ -192,7 +192,7 @@ def transfer():
 
     cnx.commit()
 
-    return "success", 200
+    return {"status": "succes"}, 200
 
 @app.route("/get_transactions", methods=["GET"])
 def get_transactions():
