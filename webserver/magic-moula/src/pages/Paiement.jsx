@@ -65,9 +65,13 @@ const Paiement = () => {
             </div>
             </div>
             </div>
-            <div className="col">
-              <h1 style={{fontSize: '2rem',}}>Your balance: {balance} €</h1>
-                    <button className="btn btn-success">Pay</button>
+              <div className="col" style={{display: 'flex', flexDirection: 'column', alignItems: 'center',justifyContent:'center'}}>
+              
+              <h1 style={{fontSize: '2rem',}}>Your balance now: {balance} €</h1>
+              <h1 style={{fontSize: '2rem',}}>----------------------</h1>
+              <h1 style={{fontSize: '2rem',marginBottom:'25px'}}>Your balance after: {balance-taxprice} €</h1>
+                    <button className="btn btn-success btn-lg">Pay with MagicMoula</button>
+              
               </div>
             </div>
             </>)
