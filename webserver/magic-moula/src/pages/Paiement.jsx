@@ -17,6 +17,29 @@ const Paiement = () => {
     const command = JSON.parse(params.get('command'));
     const [balance, setBalance] = useState(0.00)
     console.log(command)
+    const handlePaie = () => {
+      fetch("http://localhost:5000/transfer", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': localStorage.getItem('token')
+            },
+            body: JSON.stringify({
+                to: 9,
+                amount: montant,
+                category: "transfer",
+                message: ""
+            })
+        }).then((response) => {
+            if (response.status === 200) {
+                return response.json()
+            }
+        }).then((data) => {
+            if (data === 'success') {
+                // window.location.href = '/dashboard'
+            }
+        });
+    }
     useEffect(() => {
         fetch("http://localhost:5000/get_balance", {
             method: "GET",
@@ -70,7 +93,7 @@ const Paiement = () => {
               <h1 style={{fontSize: '2rem',}}>Your balance now: {balance} €</h1>
               <h1 style={{fontSize: '2rem',}}>----------------------</h1>
               <h1 style={{fontSize: '2rem',marginBottom:'25px'}}>Your balance after: {balance-taxprice} €</h1>
-                    <button className="btn btn-success btn-lg">Pay with MagicMoula</button>
+                    <button className="btn btn-success btn-lg" onClick={handlePaie}>Pay with MagicMoula</button>
               
               </div>
             </div>
