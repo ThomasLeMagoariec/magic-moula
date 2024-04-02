@@ -27,7 +27,6 @@ function Dashboard() {
                 'authorization': localStorage.getItem('token')
             },
             body: JSON.stringify({
-                from: id,
                 to: iban,
                 amount: montant,
                 category: "transfer",
