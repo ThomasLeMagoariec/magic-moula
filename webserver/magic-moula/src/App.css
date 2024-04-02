@@ -1,7 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@font-face {
+    font-family: 'Receipt-Bold';
+    src: url('fonts\Merchant Copy Doublesize.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Receipt';
+    src: url('fonts\Merchant Copy.ttf') format('truetype');
+}
+
+
+
 
 * {
     font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+}
+
+h1 {
+    overflow: hidden;
 }
 
 .btn-primary {
