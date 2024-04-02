@@ -16,7 +16,10 @@ function Dashboard() {
     const [montant, setMontant] = useState(0.00);
     const [transfer, setTransfer] = useState([{}]);
 
+
+
     const handleSend = () => {
+        var msg = prompt("enter a message for transfer:")
         fetch("http://localhost:5000/transfer", {
             method: "POST",
             headers: {
@@ -28,7 +31,7 @@ function Dashboard() {
                 to: iban,
                 amount: montant,
                 category: "transfer",
-                message: ""
+                message: msg
             })
         }).then((response) => {
             if (response.status === 200) {
@@ -39,6 +42,7 @@ function Dashboard() {
                 setTransfer(data)
             }
         });
+
         }
 
     useEffect(() => {
@@ -85,7 +89,7 @@ function Dashboard() {
             <div className="col" style={{maxWidth: '30%'}}>
                 <div style={{display: 'flex',flexDirection: 'column',borderRadius: '30px', justifyContent: 'space-around', width: '100%', height: '140px', backgroundColor: '#283044', padding: '30px'}}>
                     <h1 style={{color: 'white', fontSize: '30px'}}>Hello, {name}</h1>
-                    <h1 style={{color: 'white',textAlign:'right', fontSize: '35px'}}>{balance} €</h1>
+                    <h1 style={{color: 'white',textAlign:'right', fontSize: '35px'}}>{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(balance)}</h1>
                 </div>
                 <div style={{display: 'flex',borderRadius: '30px', justifyContent: 'space-between', width: '100%', height: '280px',marginTop:'20px', backgroundColor: '#283044'}}></div>
             </div>
@@ -97,7 +101,7 @@ function Dashboard() {
                             {transaction[7] ? <img src={flecher} height={"40px"}/>: <img src={flechev} height={"40px"}/>}
                             <a>{"Type: " + transaction[3]}</a>
                             {transaction[7] ? <a>{"Envoyer à " + transaction[6]}</a> : <a>{"Recu de "+ transaction[6]}</a>}
-                            <a>{ transaction[2]+" €"}</a>
+                            <a>{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(transaction[2])}</a>
                         </div>
                     ))}
                 
@@ -106,9 +110,9 @@ function Dashboard() {
         </div>
         <div className="row" style={{marginTop: '30px'}}>
             <div className='col'>
-                    <div style={{display: 'flex',flexDirection:'column', padding: '25px',borderRadius: '30px',  width: '100%', height: '350px', backgroundColor: '#283044'}}>
+                    <div style={{display: 'flex',flexDirection:'column', padding: '25px',borderRadius: '30px',  width: '100%', height: '350px', backgroundColor: '#283044', color: "white"}}>
                         <h1 style={{color: 'white', fontSize: '30px', marginBottom: '10px'}}>Quick Transfer</h1>
-                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: "black"}}>
                         <div className="border border-2 rounded-3 form-floating m-2">
                             <input id='password' type="password" placeholder="Mot de passe" onChange={(ev) => setIban(ev.target.value)} className="form-control" />
                             <label htmlFor="password" className="form-label">IBAN</label>
@@ -117,13 +121,14 @@ function Dashboard() {
                             <input id='password' type="password" placeholder="Mot de passe" onChange={(ev) => setMontant(ev.target.value)} className="form-control" />
                             <label htmlFor="password" className="form-label">Amount</label>
                         </div>
-                        <button className='btn btn-primary' onClick={handleSend}>Send</button>
+                        <button className='btn btn-lg btn-primary' onClick={handleSend}>Send</button>
                         </div>
                         {loading ? null : transfer.map((transaction2) => (
-                            <div>
-                                <a>Iban : {transaction2[0]}</a>
-                                <a>Amount : {transaction2[1]}</a>
-                                <button className='btn btn-primary'>ReSend</button>
+                            
+                            <div style={{marginLeft: "10px"}}>
+                                <a>Iban : {transaction2[0]} </a>
+                                <a>Amount : {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(transaction2[1])} </a>
+                                <button className='btn btn-primary'>Send Again</button>
                             </div>)
                         )}
                     </div>
