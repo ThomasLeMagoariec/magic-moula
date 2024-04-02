@@ -181,16 +181,16 @@ def transfer():
     cursor.execute("SELECT balance FROM usr_accounts WHERE id=%s", (data["from"],))
     sender_bal = cursor.fetchall()[0][0]
 
-    if sender_bal < int(data["amount"]) and data["from"] != 1: return "Insufficient funds", 400
+    if sender_bal < float(data["amount"]) and data["from"] != 1: return "Insufficient funds", 400
 
-    cursor.execute("UPDATE usr_accounts SET balance=%s WHERE id=%s", (recv_bal + int(data["amount"]), data["to"]))
-    if data["from"] != 1: cursor.execute("UPDATE usr_accounts SET balance=%s WHERE id=%s", (sender_bal - int(data["amount"]), data["from"]))
+    cursor.execute("UPDATE usr_accounts SET balance=%s WHERE id=%s", (recv_bal + float(data["amount"]), data["to"]))
+    if data["from"] != 1: cursor.execute("UPDATE usr_accounts SET balance=%s WHERE id=%s", (sender_bal - float(data["amount"]), data["from"]))
 
     cursor.execute("INSERT INTO transactions (sender_account_id, receiver_account_id, amount, category, message) VALUES (%s, %s, %s, %s, %s)", (data["from"], data["to"], data["amount"], data["category"], data["message"]))
 
     cnx.commit()
 
-    return "success", 200
+    return {"status": "succes"}, 200
 
 @app.route("/get_transactions", methods=["GET"])
 def get_transactions():
