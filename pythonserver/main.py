@@ -5,12 +5,14 @@ import mysql.connector
 from dotenv import load_dotenv
 import os
 import time
-from tkinter import messagebox as mb
+import threading
+from random import randint
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"*": {"origins": "*"}})
 
 public_key = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz3z3z3z3z3z3z3z3z3z3\n"
+value = 1
 
 """
 ! API Endpoints
@@ -26,6 +28,14 @@ public_key = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCg
 * Get Account Transactions
 
 """
+
+def update_value():
+    global value
+    while True:
+        value += round(randint(-501, 499) / 1000, 3)
+        if value < 0: value = 0
+        print("$MAGIC:", value)
+        time.sleep(5)  # Sleep for 60 seconds (1 minute)
 
 
 @app.route('/')
@@ -245,14 +255,13 @@ def get_admin_data():
     cursor.execute("SELECT * FROM usr_accounts")
     res = cursor.fetchall()
 
-    return {"data": res}, 200
+    return {"data": res, "magic_value": f"{value:.3f}"}, 200
 
-@app.route("/total_money")
-def total_money():
-    cursor.execute("SELECT SUM(balance) FROM usr_accounts")
-    res = cursor.fetchall()
 
-    return {"total": res[0][0]}, 200
+@app.route("/get_magic_value")
+def get_magic_value():
+    return {"value": f"{value:.3f}"}, 200
+
 
 if __name__ == '__main__':
     load_dotenv()
@@ -268,6 +277,20 @@ if __name__ == '__main__':
     cursor = cnx.cursor(buffered=True)
     # cursor.execute("USE prod_magic_moula")
 
+    cursor.execute("SELECT value FROM sys_vars WHERE name='magic_value'")
+    value = float(cursor.fetchall()[0][0])
+    print("START VALUE: ", value)
+
+    value_thread = threading.Thread(target=update_value)
+    value_thread.daemon = True  # Daemonize the thread
+    value_thread.start()
+
     app.run(host="0.0.0.0", debug=True)
+
+
+    print("SAVING")
+    cursor.execute("UPDATE sys_vars SET value=%s WHERE name='magic_value'", (value,))
+    cnx.commit()
+
     cursor.close()
     cnx.close()

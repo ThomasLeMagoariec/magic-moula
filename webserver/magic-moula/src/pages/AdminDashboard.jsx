@@ -7,6 +7,7 @@ function AdminDashboard() {
     const [accounts, setAccounts] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0.00);
     const [number, setNumber] = useState(0);
+    const [value, setValue] = useState(0);
     
     useEffect(() => {
         fetch("http://localhost:5000/get_admin_data", {
@@ -21,6 +22,7 @@ function AdminDashboard() {
         }).then((data) => {
             if (data) {
                 setAccounts(data["data"]);
+                setValue(data["magic_value"])
             }
         });
 
@@ -81,7 +83,7 @@ function AdminDashboard() {
         <>
             <Header />
             <div className="content" style={{background: "#F7EDE2", height: "100vh"}}>
-                <h1 style={{margin: "20px"}}>{new Intl.NumberFormat("fr-FR", {style: "currency", currency: "EUR"}).format(totalAmount)}<br />{number} accounts</h1>
+                <h1 style={{margin: "20px"}}>{new Intl.NumberFormat("fr-FR", {style: "currency", currency: "EUR"}).format(totalAmount)}<br />{number} accounts <br />$MAGIC: {value}</h1>
                 <br />
                 <div className="container" style={{display: "flex"}}>
                     {accounts.map((account) => (
