@@ -158,9 +158,7 @@ def get_balance():
     if not id_: return "ID is required", 400
 
     cursor.execute("SELECT balance FROM usr_accounts WHERE id=%s", (id_,))
-
-
-    time.sleep(1)
+    
     return str(cursor.fetchall()[0][0]), 200
 
 @app.route("/update_balance", methods=["POST"])
@@ -266,14 +264,14 @@ def get_magic_value():
 if __name__ == '__main__':
     load_dotenv()
 
-    cnx = mysql.connector.connect(
-        host=os.environ["DB_HOST"],
-        database='prod_magic_moula',
-        user="root",
-        password=os.environ["DB_PWD"],
-        unix_socket="/var/run/mysqld/mysqld.sock"  
-    )
-    #cnx = mysql.connector.connect(host='localhost',database='magicmoula',user='root')
+    # cnx = mysql.connector.connect(
+    #     host=os.environ["DB_HOST"],
+    #     database='prod_magic_moula',
+    #     user="root",
+    #     password=os.environ["DB_PWD"],
+    #     unix_socket="/var/run/mysqld/mysqld.sock"  
+    # )
+    cnx = mysql.connector.connect(host='localhost',database='magicmoula',user='root')
     cursor = cnx.cursor(buffered=True)
     # cursor.execute("USE prod_magic_moula")
 

@@ -17,7 +17,8 @@ const Paiement = () => {
     const command = JSON.parse(params.get('command'));
     const [balance, setBalance] = useState(0.00)
     console.log(command)
-    const handlePaie = () => {
+    const handlePaie = (taxprice2) => {
+      console.log(taxprice2)
       fetch("http://localhost:5000/transfer", {
             method: "POST",
             headers: {
@@ -26,7 +27,7 @@ const Paiement = () => {
             },
             body: JSON.stringify({
                 to: 9,
-                amount: montant,
+                amount: taxprice2,
                 category: "transfer",
                 message: ""
             })
@@ -92,8 +93,8 @@ const Paiement = () => {
               
               <h1 style={{fontSize: '2rem',}}>Your balance now: {balance} €</h1>
               <h1 style={{fontSize: '2rem',}}>----------------------</h1>
-              <h1 style={{fontSize: '2rem',marginBottom:'25px'}}>Your balance after: {balance-taxprice} €</h1>
-                    <button className="btn btn-success btn-lg" onClick={handlePaie}>Pay with MagicMoula</button>
+              <h1 style={{fontSize: '2rem',marginBottom:'25px'}}>Your balance after: {(balance - taxprice).toFixed(2)} €</h1>
+                    <button className="btn btn-success btn-lg" onClick={() => handlePaie(taxprice)}>Pay with MagicMoula</button>
               
               </div>
             </div>
