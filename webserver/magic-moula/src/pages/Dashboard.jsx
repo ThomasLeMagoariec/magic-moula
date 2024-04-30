@@ -4,6 +4,10 @@ import Header from "../components/Header";
 import { useEffect, useState } from 'react';
 import flechev from '../img/flechev.png';
 import flecher from '../img/flecher.png';
+import { Graph } from '../components/Graph';
+
+
+
 
 function Dashboard() {
     const navigate = useNavigate();
@@ -16,7 +20,7 @@ function Dashboard() {
     const [montant, setMontant] = useState(0.00);
     const [transfer, setTransfer] = useState([{}]);
     const [reload, setReload] = useState(0);
-
+    const [crypto, setCrypto] = useState(0.00);
 
 
     const handleSend = (iban,montant) => {
@@ -40,6 +44,23 @@ function Dashboard() {
         })
 
         }
+    
+    const updateCrypto = () => {
+        fetch("http://localhost:5000/get_magic_value", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => {
+            if (response.status === 200) {
+                return response.json()
+            }
+        }).then((data) => {
+            if (data) {
+                setCrypto(parseInt(data.value))
+            }
+        });
+    }
 
     useEffect(() => {
         fetch("http://localhost:5000/get_user_info", {
@@ -62,6 +83,8 @@ function Dashboard() {
                 setLoading(false)
             }
         });
+        updateCrypto()
+        console.log(crypto)
     }, [reload]);
 
 
@@ -128,7 +151,7 @@ function Dashboard() {
                     </div>
             </div>  
             <div className='col'>
-                <div style={{display: 'flex',borderRadius: '30px', justifyContent: 'space-between', width: '100%', height: '440px', backgroundColor: '#283044'}}></div>
+                <div style={{display: 'flex',borderRadius: '30px', justifyContent: 'space-between', width: '100%', height: '440px', backgroundColor: '#283044'}}><Graph/></div>
             </div>
         </div>
     </div>

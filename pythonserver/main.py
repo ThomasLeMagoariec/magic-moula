@@ -31,10 +31,12 @@ value = 1
 
 def update_value():
     global value
+    count = 0
     while True:
-        value += round(randint(-501, 499) / 1000, 3)
+        value += round(randint(-501, 499) / 100, 3)
         if value < 0: value = 0
-        print("$MAGIC:", value)
+        count += 1
+        print("$MAGIC:", value, count)
         time.sleep(5)  # Sleep for 60 seconds (1 minute)
 
 
@@ -258,6 +260,7 @@ def get_admin_data():
 
 @app.route("/get_magic_value")
 def get_magic_value():
+    print(value)
     return {"value": f"{value:.3f}"}, 200
 
 
@@ -283,7 +286,7 @@ if __name__ == '__main__':
     value_thread.daemon = True  # Daemonize the thread
     value_thread.start()
 
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=False)
 
 
     print("SAVING")
