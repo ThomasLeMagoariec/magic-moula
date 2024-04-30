@@ -89,14 +89,14 @@ const Paiement = () => {
             </div>
             </div>
             </div>
-              <div className="col" style={{display: 'flex', flexDirection: 'column', alignItems: 'center',justifyContent:'center'}}>
-              
-              <h1 style={{fontSize: '2rem',}}>Your balance now: {balance} €</h1>
-              <h1 style={{fontSize: '2rem',}}>----------------------</h1>
-              <h1 style={{fontSize: '2rem',marginBottom:'25px'}}>Your balance after: {(balance - taxprice).toFixed(2)} €</h1>
-                    <button className="btn btn-success btn-lg" onClick={() => handlePaie(taxprice)}>Pay with MagicMoula</button>
-              
-              </div>
+                <div className="col" style={{display: 'flex', flexDirection: 'column', alignItems: 'center',justifyContent:'center'}}>
+                
+                <h1 style={{fontSize: '2rem',}}>Your balance now: {balance} €</h1>
+                <h1 style={{fontSize: '2rem',}}>----------------------</h1>
+                <h1 style={{fontSize: '2rem',marginBottom:'25px'}}>Your balance after: {(balance - taxprice).toFixed(2)} €</h1>
+                        <button className="btn btn-success btn-lg" onClick={() => handlePaie(taxprice)}>Pay with MagicMoula</button>
+                
+                </div>
             </div>
             </>)
         } else {

@@ -119,11 +119,11 @@ def get_user_info():
 
     res = cursor.fetchall()[0]
     
-    cursor.execute("SELECT receiver_account_id,amount FROM transactions WHERE transactions.sender_account_id = %s ORDER BY transactions.id DESC LIMIT 2;", (id_,))
+    cursor.execute("SELECT receiver_account_id,amount FROM transactions WHERE transactions.sender_account_id = %s ORDER BY transactions.id DESC LIMIT 3;", (id_,))
     
     res4 = cursor.fetchall()
 
-    cursor.execute("SELECT * FROM transactions WHERE transactions.sender_account_id = %s OR transactions.receiver_account_id = %s ORDER BY transactions.id LIMIT 5;", (id_, id_))
+    cursor.execute("SELECT * FROM transactions WHERE transactions.sender_account_id = %s OR transactions.receiver_account_id = %s ORDER BY transactions.id DESC LIMIT 5;", (id_, id_))
     
     transactions = []
     res3 = cursor.fetchall()
@@ -183,8 +183,8 @@ def transfer():
 
     if sender_bal < float(data["amount"]) and data["from"] != 1: return "Insufficient funds", 400
 
-    cursor.execute("UPDATE usr_accounts SET balance=%s WHERE id=%s", (recv_bal + float(data["amount"]), data["to"]))
-    if data["from"] != 1: cursor.execute("UPDATE usr_accounts SET balance=%s WHERE id=%s", (sender_bal - float(data["amount"]), data["from"]))
+    cursor.execute("UPDATE usr_accounts SET balance=%s WHERE id=%s", (float(recv_bal) + float(data["amount"]), data["to"]))
+    if data["from"] != 1: cursor.execute("UPDATE usr_accounts SET balance=%s WHERE id=%s", (float(sender_bal) - float(data["amount"]), data["from"]))
 
     cursor.execute("INSERT INTO transactions (sender_account_id, receiver_account_id, amount, category, message) VALUES (%s, %s, %s, %s, %s)", (data["from"], data["to"], data["amount"], data["category"], data["message"]))
 
