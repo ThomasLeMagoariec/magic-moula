@@ -13,6 +13,7 @@ cors = CORS(app, resources={r"*": {"origins": "*"}})
 
 public_key = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz3z3z3z3z3z3z3z3z3z3\n"
 value = 1
+historical = []
 
 """
 ! API Endpoints
@@ -34,6 +35,7 @@ def update_value():
     count = 0
     while True:
         value += round(randint(-501, 499) / 100, 3)
+        historical.append(value)
         if value < 0: value = 0
         count += 1
         print("$MAGIC:", value, count)
@@ -261,7 +263,8 @@ def get_admin_data():
 @app.route("/get_magic_value")
 def get_magic_value():
     print(value)
-    return {"value": f"{value:.3f}"}, 200
+    global historical
+    return {"value": f"{value:.3f}", "historical": historical}, 200
 
 
 if __name__ == '__main__':

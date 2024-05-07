@@ -6,7 +6,12 @@ import flechev from '../img/flechev.png';
 import flecher from '../img/flecher.png';
 import { Graph } from '../components/Graph';
 
-
+const getCurrentTime = () => {
+    const date = new Date();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+}
 
 
 function Dashboard() {
@@ -21,7 +26,8 @@ function Dashboard() {
     const [transfer, setTransfer] = useState([{}]);
     const [reload, setReload] = useState(0);
     const [crypto, setCrypto] = useState(0.00);
-
+    const [historical, setHistorical] = useState([[]]);
+    const [time, setTime] = useState("00:00");
 
     const handleSend = (iban,montant) => {
         var msg = prompt("enter a message for transfer:")
@@ -58,6 +64,8 @@ function Dashboard() {
         }).then((data) => {
             if (data) {
                 setCrypto(parseInt(data.value))
+                setHistorical(data.historical)
+                setTime(getCurrentTime());
             }
         });
     }
@@ -151,7 +159,10 @@ function Dashboard() {
                     </div>
             </div>  
             <div className='col'>
-                <div style={{display: 'flex',borderRadius: '30px', justifyContent: 'space-between', width: '100%', height: '440px', backgroundColor: '#283044'}}><Graph/></div>
+                <div style={{display: 'flex',borderRadius: '30px',padding: '30px', flexDirection: 'column',justifyContent: 'space-between', width: '100%', height: '440px', backgroundColor: '#283044'}}>
+                    <div style={{height: "300px", width: '100%'}}><Graph time={time} history={historical}/></div>
+                    <div>{crypto}</div>
+                    </div>
             </div>
         </div>
     </div>
