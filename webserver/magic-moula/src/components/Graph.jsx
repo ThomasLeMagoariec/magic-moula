@@ -24,30 +24,35 @@ ChartJS.register(
 export const options = {
   responsive: true,
   plugins: {
-    legend: {
-      position: 'top',
-    },
     title: {
-      display: true,
-      text: 'Chart.js Line Chart',
+      display: false,
+      text: 'Magic Moula',
     },
   },
 };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+const labels = ['January','January','January','January', 'February', 'March', 'April', 'May', 'June', 'July'];
 
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: labels.map(() => Math.random() * 1000),
-      borderColor: 'rgb(255, 99, 132)',
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+export function Graph(props) {
+  const time = props["time"];
+  for (let i = 0; i < 10; i++) {
+    if (parseInt(time.slice(-2))-i < 0) {
+      labels[i] = (parseInt(time.slice(0,2))-1)+time.slice(2,3)+String(parseInt(time.slice(-2))-i+60).padStart(2, '0');
+    } else {
+      labels[i] = time.slice(0,3)+String(parseInt(time.slice(-2))-i).padStart(2, '0');
     }
-  ],
-};
-
-export function Graph() {
+  }
+  const slicehistory = props["history"].slice(-10);
+  labels.reverse();
+  const data = {
+    labels,
+    datasets: [
+      {
+        data: slicehistory,
+        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      }
+    ],
+  };
   return <Line options={options} data={data} />;
 }
