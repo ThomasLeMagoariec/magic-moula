@@ -28,6 +28,27 @@ function Dashboard() {
     const [crypto, setCrypto] = useState(0.00);
     const [historical, setHistorical] = useState([[]]);
     const [time, setTime] = useState("00:00");
+    const [owned, setOwned] = useState(0.00);
+
+    const handleBuy = () => {
+        fetch("http://localhost:5000/buy_magiccoin", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': localStorage.getItem('token')
+            },
+        })
+    }
+
+    const handleSell = () => {
+        fetch("http://localhost:5000/sell_magiccoin", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': localStorage.getItem('token')
+            },
+        })
+    }
 
     const handleSend = (iban,montant) => {
         var msg = prompt("enter a message for transfer:")
@@ -55,7 +76,8 @@ function Dashboard() {
         fetch("http://localhost:5000/get_magic_value", {
             method: "GET",
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'authorization': localStorage.getItem('token')
             }
         }).then((response) => {
             if (response.status === 200) {
@@ -65,6 +87,7 @@ function Dashboard() {
             if (data) {
                 setCrypto(parseInt(data.value))
                 setHistorical(data.historical)
+                
                 setTime(getCurrentTime());
             }
         });
@@ -89,6 +112,7 @@ function Dashboard() {
                 setTransactions(data.transactions);
                 setTransfer(data.recent_transfer);
                 setLoading(false)
+                setOwned(data.owned)
             }
         });
         updateCrypto()
@@ -161,8 +185,14 @@ function Dashboard() {
             <div className='col'>
                 <div style={{display: 'flex',borderRadius: '30px',padding: '30px', flexDirection: 'column',justifyContent: 'space-between', width: '100%', height: '440px', backgroundColor: '#283044'}}>
                     <div style={{height: "300px", width: '100%'}}><Graph time={time} history={historical}/></div>
-                    <div>{crypto}</div>
+                    <div style={{color: 'white', textAlign: 'center'}}>{"Prix : " + crypto+ " Posséder : "+owned}</div>
+                    <div style={{display: 'flex', justifyContent: 'space-around'}}>
+                        <button className='btn btn-lg btn-primary' onClick={() => handleBuy()}>Buy</button>
+                        <button className='btn btn-lg btn-primary' onClick={() => handleSell(
+                            
+                        )}>Sell</button>
                     </div>
+                </div>
             </div>
         </div>
     </div>

@@ -129,7 +129,7 @@ def get_user_info():
 
     if not id_: return "ID is required", 400
 
-    cursor.execute("SELECT id, name, last_name, email, balance FROM usr_accounts WHERE id=%s", (id_,))
+    cursor.execute("SELECT id, name, last_name, email, balance,balancee FROM usr_accounts WHERE id=%s", (id_,))
 
     res = cursor.fetchall()[0]
     
@@ -138,9 +138,12 @@ def get_user_info():
     res4 = cursor.fetchall()
 
     cursor.execute("SELECT * FROM transactions WHERE transactions.sender_account_id = %s OR transactions.receiver_account_id = %s ORDER BY transactions.id DESC LIMIT 5;", (id_, id_))
-    
+
     transactions = []
     res3 = cursor.fetchall()
+
+    cursor.execute("SELECT balancee FROM usr_accounts WHERE id=%s", (id_,))
+    res5 = cursor.fetchall()[0][0]
     
     for x in res3:
         sender = False
@@ -153,7 +156,7 @@ def get_user_info():
         res2 = cursor.fetchall()
         transactions.append(list(x)+[res2[0][0]]+[sender])
 
-    return {"name": res[1], "last_name": res[2], "email": res[3], "balance": res[4], "id": res[0], "recent_transfer": res4, "transactions": transactions}, 200
+    return {"name": res[1], "last_name": res[2], "email": res[3],"owned": res[5], "balance": res[4], "id": res[0], "recent_transfer": res4, "transactions": transactions}, 200
 
 @app.route("/get_balance", methods=["GET"])
 def get_balance():
@@ -262,10 +265,34 @@ def get_admin_data():
 
 @app.route("/get_magic_value")
 def get_magic_value():
-    print(value)
     global historical
     return {"value": f"{value:.3f}", "historical": historical}, 200
 
+@app.route("/buy_magiccoin")
+def buy_magiccoin():
+    id_ = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256").get("id")
+    cursor.execute(f"SELECT balance,balancee FROM usr_accounts WHERE id={id_}")
+    bal = cursor.fetchall()[0]
+    print(bal)
+    if not id_: return "ID is required", 400
+    if bal[0] < value: return "Insufficient funds", 400
+    cursor.execute(f"UPDATE usr_accounts SET balance={float(bal[0]) - value} WHERE id={id_}")
+    cursor.execute(f"UPDATE usr_accounts SET balancee={bal[1]+1} WHERE id={id_}")
+    cnx.commit()
+    return "success", 200
+
+@app.route("/sell_magiccoin")
+def sell_magiccoin():
+    id_ = jwt.decode(request.headers["authorization"], key=public_key, algorithms="HS256").get("id")
+    cursor.execute(f"SELECT balance,balancee FROM usr_accounts WHERE id={id_}")
+    bal = cursor.fetchall()[0]
+    print(bal)
+    if not id_: return "ID is required", 400
+    if bal[1] < 1: return "Insufficient funds", 400
+    cursor.execute(f"UPDATE usr_accounts SET balance={float(bal[0]) + value} WHERE id={id_}")
+    cursor.execute(f"UPDATE usr_accounts SET balancee={bal[1]-1} WHERE id={id_}")
+    cnx.commit()
+    return "success", 200
 
 if __name__ == '__main__':
     load_dotenv()
